@@ -1,0 +1,1031 @@
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crescent School — Excellence with Values</title>
+  <meta name="description" content="A complete K-12 Muslim school with Pre-School, Grades 1-10 (English &amp; Gujarati Medium), 11–12 Science (English &amp; Gujarati), and a Special Girls’ School, with Morning and Noon shifts.">
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet">
+  
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <style>
+    /* 1. COLOR & GLASS VARIABLES (MATCHING LOGO) */
+    :root{
+      /* Logo Colors */
+      --primary: #0F6F3A;     /* Deep Forest Green */
+      --primary-dark: #074724; /* Darker Green for background/hover */
+      --accent: #CAA64A;      /* Rich Gold/Olive */
+
+      /* Glass UI Variables */
+      --dark-bg: #0A1D14; /* Original dark for contrast */
+      --glass-bg: rgba(255, 255, 255, 0.05); /* Frosted Glass Base */
+      --glass-border: rgba(255, 255, 255, 0.15); /* Light border */
+      --text: #f0f0f0;      /* Light text for dark/glass background */
+      --text-dim: #b0c0b8;   /* Dimmmed light text */
+      --white: #ffffff;
+
+      --radius: 20px; /* Slightly larger radius for the glass feel */
+      --shadow: 0 8px 32px rgba(0,0,0,.4); /* Stronger shadow for depth */
+      --shadow-soft: 0 4px 16px rgba(0,0,0,.2);
+      --maxw: 1200px;
+    }
+
+    /* GLOBAL STYLES & BACKGROUND */
+    *{box-sizing: border-box}
+    html,body{
+        margin:0;
+        padding:0;
+        font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+        color:var(--text);
+        /* 2. New Background for Glass Effect */
+        background: linear-gradient(135deg, var(--primary-dark) 0%, #1a3a2d 100%);
+        background-attachment: fixed;
+    }
+    a{color:var(--accent);text-decoration:none}
+    img{max-width:100%;display:block}
+
+    /* Top bar */
+    .topbar{background:var(--primary-dark);color:#dfe9e4;font-size:.9rem}
+    .wrap{max-width:var(--maxw);margin:auto;padding:0 20px}
+    .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:10px 20px}
+    .topbar a{color:#dfe9e4;margin-left:16px}
+
+    /* Header / nav (Glass UI applied here) */
+    header{
+        position:sticky;
+        top:0;
+        z-index:50;
+        /* Glass Effect */
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-soft);
+    }
+    nav{display:flex;align-items:center;justify-content:space-between;max-width:var(--maxw);margin:auto;padding:16px 20px;gap:16px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand img{width:52px;height:52px;border-radius:12px;object-fit:contain;background:var(--white);border:2px solid var(--accent)}
+    .brand .title{font-weight:800;letter-spacing:.5px;color:var(--accent)}
+    .brand .subtitle{font-size:.85rem;color:var(--text-dim);margin-top:-4px}
+
+    .menu{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+    .menu a{padding:10px 14px;border-radius:14px;transition:background 0.2s, color 0.2s}
+    .menu a:hover{background:rgba(255, 255, 255, 0.1);color:var(--accent)}
+    .cta{background:var(--primary);color:#fff;padding:10px 18px;border-radius:14px;box-shadow:var(--shadow-soft);border:1px solid var(--primary-dark)}
+    .cta:hover{background:var(--primary-dark)}
+
+    .burger{display:none;background:transparent;border:0;font-size:1.4rem;color:var(--text)}
+
+    /* Hero */
+    .hero{max-width:var(--maxw);margin:30px auto;padding:24px 20px}
+    .hero-card{
+      /* Glass effect applied to hero card */
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      border:1px solid var(--glass-border);
+      border-radius:30px; /* Better Shapes */
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      /* Desktop Layout: copy | media (Left | Right) */
+      grid-template-columns:1fr 1fr; 
+      grid-template-areas: "copy media"; 
+      gap:10px;
+    }
+    .hero-copy{
+        padding:36px 32px 36px 36px; 
+        grid-area: copy; /* Assign desktop area */
+    } 
+    .eyebrow{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        background:rgba(255, 255, 255, 0.1);
+        border:1px solid var(--glass-border);
+        color:var(--accent);
+        padding:8px 12px;
+        border-radius:999px;
+        font-weight:600;
+        font-size:.9rem;
+        margin-bottom:16px
+    }
+    h1{margin:0 0 12px;font-size:2.4rem;line-height:1.2;color:var(--white)} /* Larger, clearer text */
+    .lead{color:var(--text-dim);font-size:1.05rem;margin-bottom:20px}
+    .hero-stats{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px}
+    .badge{
+        background:rgba(255, 255, 255, 0.05); /* Inner Glass effect */
+        padding:10px 14px;
+        border-radius:14px;
+        border:1px solid rgba(255, 255, 255, 0.08);
+        font-weight:600;
+        color:var(--text-dim);
+        font-size:.95rem;
+    }
+    
+    /* === Hero Media / Slideshow Styles === */
+    .hero-illustration{
+        /* Changed to 'block' to manage absolute children */
+        display:block;
+        /* Removed padding and alignment, using absolute positioning on children */
+        padding: 0; 
+        position: relative; /* CRITICAL: for children absolute positioning */
+        overflow: hidden;
+        border-radius: 30px; /* Match hero-card radius */
+        /* Gold/Green Gradient for background visual */
+        background: linear-gradient(180deg, rgba(15,111,58,.3), transparent 50%), radial-gradient(70% 70% at 50% 30%, rgba(202,166,74,.3), transparent 60%);
+        min-height: 350px; /* Ensure a minimum height */
+        grid-area: media; /* Assign desktop area */
+    }
+
+    /* Style for both the video and the images for fitting and rounded edges */
+    .hero-media {
+        width: 100%;
+        height: 100%; 
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: cover; /* Ensures filling the container, cropping if necessary (Fix from 'contain' to 'cover') */
+        border-radius: 20px; /* Round edges on the media */
+        filter: drop-shadow(0 20px 40px rgba(0,0,0,.3));
+        position: absolute; /* Stack media layers */
+        top: 0;
+        left: 0;
+        transition: opacity 1s ease-in-out;
+    }
+
+    /* Slideshow Container (starts hidden by opacity) */
+    .slideshow-container {
+        opacity: 0; 
+        z-index: 1; /* Below video initially */
+    }
+
+    /* Individual slides (stacked) */
+    .slideshow-container .slide {
+        /* Inherit hero-media positioning and sizing */
+        position: absolute;
+        opacity: 0; /* Default hidden */
+        transition: opacity 1s ease-in-out;
+    }
+
+    /* Only the active slide is visible */
+    .slideshow-container .slide.active {
+        opacity: 1; 
+    }
+
+    /* Video element specific (starts visible, higher z-index) */
+    #heroVideo {
+        opacity: 1; 
+        z-index: 2;
+    }
+    /* === End Hero Media Styles === */
+
+
+    /* Section helpers */
+    section{max-width:var(--maxw);margin:0 auto;padding:30px 20px}
+    .section-title{display:flex;align-items:end;justify-content:space-between;margin-bottom:16px}
+    .section-title h2{margin:0;font-size:1.8rem;color:var(--accent)}
+    .section-sub{color:var(--text-dim);margin:4px 0 0}
+
+    /* Cards grid */
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px} /* Increased gap for better spacing */
+    .col-4{grid-column:span 4}
+    .col-6{grid-column:span 6}
+    .col-8{grid-column:span 8}
+    .col-12{grid-column:span 12}
+    
+    /* Perfect Sizing: Media query refined for mobile responsiveness */
+    @media(max-width:980px){
+      /* Ensure all content sections stack correctly */
+      .col-4,.col-6,.col-8{grid-column:span 12}
+      
+      /* FIX 1: Mobile Hero Card Layout - Stack Media on Top */
+      .hero-card{
+        grid-template-columns:1fr; /* Force stacking on mobile */
+        grid-template-areas: "media" "copy"; /* Place media on top of copy */
+        border-radius: 0; /* Remove overall card rounding on small screens for full width */
+      }
+
+      .hero-copy{
+          grid-area: copy;
+          padding: 24px 20px; /* Adjust padding for cleaner mobile look */
+          border-radius: 0 0 30px 30px; /* Round the bottom edges of the content */
+      }
+      .hero-illustration{
+          grid-area: media;
+          display: block; /* FIX 2: Ensure the illustration/slideshow is visible on mobile */
+          min-height: 250px; /* Good height for mobile banner */
+          border-radius: 30px 30px 0 0; /* Round the top edges of the illustration container */
+      }
+      .hero-illustration .hero-media {
+          /* Ensure media inside matches container's top rounding */
+          border-radius: 30px 30px 0 0;
+      }
+    }
+
+    .card{
+        /* Glass effect for content cards */
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-soft);
+        padding: 24px; /* Increased padding */
+        transition: transform 0.2s, background 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.05);
+    }
+    .card h3{margin:0 0 8px; color:var(--accent)}
+    .chip{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:8px 12px;
+        border-radius:999px;
+        border:1px solid var(--glass-border);
+        background:rgba(255, 255, 255, 0.1);
+        font-size:.9rem;
+        color:var(--accent);
+        font-weight:600
+    }
+
+    /* Programs filter (Glass buttons) */
+    .filters{display:flex;gap:10px;flex-wrap:wrap}
+    .filters button{
+        border:1px solid var(--glass-border);
+        background:transparent;
+        color:var(--text-dim);
+        padding:8px 14px;
+        border-radius:14px;
+        cursor:pointer;
+        transition:background 0.2s, color 0.2s;
+    }
+    .filters button.active{
+        background:var(--primary);
+        border-color:var(--primary);
+        color:var(--white);
+        box-shadow: 0 4px 10px rgba(15, 111, 58, 0.4);
+    }
+    .filters button:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--accent);
+    }
+
+    /* Notices / events (Glass notice) */
+    .notice{
+        display:flex;
+        gap:16px;
+        padding:16px;
+        border:1px solid var(--glass-border);
+        background:rgba(255, 255, 255, 0.03);
+        border-radius:16px;
+        margin-bottom:10px; /* Separated notices */
+    }
+    .pill{
+        font-weight:700;
+        font-size:.85rem;
+        padding:8px 12px;
+        border-radius:999px;
+        background:var(--accent);
+        border:1px solid var(--accent);
+        color:var(--primary-dark);
+        min-width:100px;
+        text-align:center
+    }
+
+    /* Tables (Glass table) */
+    table{
+        width:100%;
+        border-collapse:separate;
+        border-spacing:0;
+        border:1px solid var(--glass-border);
+        border-radius:16px;
+        overflow:hidden;
+        background:rgba(255, 255, 255, 0.03);
+    }
+    th,td{padding:14px 16px;border-bottom:1px solid rgba(255, 255, 255, 0.05)}
+    thead th{background:rgba(255, 255, 255, 0.1);text-align:left;color:var(--accent)}
+    tbody tr:last-child td{border-bottom:none}
+
+    /* FAQ (Glass accordion) */
+    details{
+        border:1px solid var(--glass-border);
+        border-radius:16px;
+        padding:16px 20px;
+        background:rgba(255, 255, 255, 0.03);
+    }
+    details+details{margin-top:12px}
+    summary{cursor:pointer;font-weight:700;color:var(--accent)}
+    summary+p{color:var(--text-dim)}
+
+    /* Footer */
+    footer{margin-top:40px;background:var(--dark-bg);color:#dfe9e4}
+    footer .cols{display:grid;grid-template-columns:repeat(12,1fr);gap:20px;padding:30px 20px;max-width:var(--maxw);margin:auto}
+    footer a{color:var(--text-dim)}
+    footer a:hover{color:var(--accent)}
+    .footbar{border-top:1px solid rgba(255,255,255,.1);padding:14px 20px;text-align:center;font-size:.9rem}
+
+    /* Buttons */
+    .btn{
+        display:inline-block;
+        background:transparent;
+        border:1px solid var(--glass-border);
+        color:var(--text);
+        padding:10px 16px;
+        border-radius:14px;
+        transition:background 0.2s, color 0.2s;
+    }
+    .btn:hover{
+        background:rgba(255, 255, 255, 0.05);
+        border-color:var(--accent);
+    }
+    .btn.primary{
+        background:var(--primary);
+        border-color:var(--primary);
+        color:var(--white);
+        box-shadow: 0 4px 10px rgba(15, 111, 58, 0.4);
+    }
+    .btn.primary:hover{
+        background:var(--primary-dark);
+        border-color:var(--primary-dark);
+    }
+
+    /* Mobile menu */
+    @media(max-width:860px){
+      nav{padding:12px 20px}
+      .brand img{width:40px;height:40px}
+      .menu{display:none;width:100%;padding-top:10px}
+      .menu.open{
+        display:flex;
+        flex-direction:column;
+        align-items:flex-start;
+        padding-bottom:10px;
+        background:rgba(0, 0, 0, 0.1);
+      }
+      .menu a{width:100%;border-radius:8px}
+      .burger{display:inline-flex;align-items:center;gap:8px}
+
+      h1{font-size:2rem} /* Perfect Sizing: Reduce large hero text on mobile */
+      .hero-copy{padding:20px}
+      
+      .topbar{display:none} /* Remove top bar on small mobile for space */
+    }
+
+    /* Custom styles for map centering */
+    .map-container {
+      display: flex;
+      justify-content: center;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--glass-border);
+      max-width: 100%; 
+      margin: 0 auto;
+    }
+    .map-container iframe {
+      width: 100%; 
+      height: 320px;
+      border: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <div class="wrap">
+      <div>📍 Sarkhej Rd, Near Shahin Tiles Factory, Behind Amber Tower, Al Asbab Society, Makarba, Ahmedabad, Gujarat 380055 • 📞 +91 9824266676 • ✉️ crescentschoolhd@yahoo.co.in</div>
+      <div>
+        <a href="#admissions">Admissions</a>
+        <a href="#downloads">Downloads</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <nav>
+      <div class="brand">
+        <img src="crescent logo.jpg" alt="Crescent School Logo">
+        <div>
+          <div class="title">Crescent School</div>
+          <div class="subtitle">Excellence • Character • Faith</div>
+        </div>
+      </div>
+
+      <button class="burger" id="burger">☰ Menu</button>
+      <div class="menu" id="menu">
+        <a href="#about">About</a>
+        <a href="#programs">Programs</a>
+        <a href="#shifts">Shifts</a>
+        <a href="#notices">Notices</a>
+        <a href="#facilities">Facilities</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#admissions" class="cta">Apply Now</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div class="hero-card">
+      <div class="hero-copy">
+        <div class="eyebrow">A Complete K–12 Muslim School • English &amp; Gujarati Medium</div>
+        <h1>Learning rooted in values, striving for excellence.</h1>
+        <p class="lead">We offer <strong>Pre-School</strong>, <strong>Grades 1–10</strong> (English &amp; Gujarati), <strong>11–12 Science,Commerce and Arts</strong> (English &amp; Gujarati), and a <strong>Seperate Girls’ School</strong>—with convenient <strong>Morning</strong> and <strong>Noon</strong> shifts.</p>
+        <div class="hero-stats">
+          <div class="badge">🕌 Prayer Room &amp; Ethics</div>
+          <div class="badge">🧪 Modern Science Labs</div>
+          <div class="badge">⚽ Sports &amp; Fitness</div>
+          
+        </div>
+        <p style="margin-top:20px">
+          <a class="btn primary" href="#admissions">Start Admission</a>
+          <a class="btn" href="#programs" style="margin-left:12px">Explore Programs</a>
+        </p>
+      </div>
+      
+      <div class="hero-illustration">
+        <video id="heroVideo" class="hero-media" autoplay="" muted="" playsinline="" poster="hero.MP4">
+            <source src="hero.MP4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
+        <div id="imageSlideshow" class="slideshow-container hero-media">
+            <img class="slide hero-media" alt="School campus illustration 1" src="DSCN6035.JPG">
+            <img class="slide hero-media" alt="School campus illustration 2" src="DSCN6042.JPG">
+            <img class="slide hero-media" alt="School campus illustration 3" src="DSCN6045.JPG">
+            <img class="slide hero-media" alt="School campus illustration 1" src="DJI_20251015180026_0002_D.JPG">
+            <img class="slide hero-media" alt="School campus illustration 2" src="DJI_20251015180336_0003_D.JPG">
+            <img class="slide hero-media" alt="School campus illustration 3" src="DSCN6015.JPG">
+            </div>
+      </div>
+    </div>
+
+    <div class="wrap" style="margin-top: 20px; color: var(--accent);">
+      <b>Update</b>
+      <marquee behavior="scroll" direction="left" aria-label="marquee announcements" id="marqueeContent">Ayaan</marquee>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="section-title">
+      <div>
+        <h2>About Our School</h2>
+        <p class="section-sub">A faith-friendly environment that nurtures intellect, character, and community.</p>
+      </div>
+      <span class="chip">Established 2008</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-8">
+        <div class="card">
+          <h3>Mission</h3>
+          <p>To deliver quality education aligned with national standards while fostering Islamic values, discipline, and compassion. We embrace both <strong>English</strong> and <strong>Gujarati</strong> mediums to serve our diverse community.</p>
+          <h3 style="margin-top:16px">Vision</h3>
+          <p>Graduates who are confident, morally grounded, and prepared for higher education and life—balancing <em>deen</em> and <em>dunya</em>.</p>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="card">
+          <h3>Quick Facts</h3>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Affiliated to: GSEB</li>
+            <li>Streams: Science (XI–XII)</li>
+            <li>Streams: Commerce (XI–XII)</li>
+            <li>Streams: Arts (XI–XII)</li>
+            <li>Mediums: English &amp; Gujarati</li>
+            <li>Shifts: Morning &amp; Noon</li>
+            <li>Separate Girls’ Section</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="programs">
+    <div class="section-title">
+      <div>
+        <h2>Academic Programs</h2>
+        <p class="section-sub">Choose by grade, medium, or section. Use filters to narrow quickly.</p>
+      </div>
+      <div class="filters">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="english">English Medium</button>
+        <button data-filter="gujarati">Gujarati Medium</button>
+        <button data-filter="preschool">Pre-School</button>
+        <button data-filter="girls">Girls’ School</button>
+        <button data-filter="science">XI–XII Science</button>
+        <button data-filter="commerce">XI–XII Commerce</button>
+        <button data-filter="arts">XI–XII Arts</button>
+      </div>
+    </div>
+
+    <div class="grid" id="programGrid">
+      <div class="col-4">
+        <div class="card program" data-tags="preschool">
+          <h3>Pre-School</h3>
+          <p>Play-based learning with phonics, numeracy, arts, sand &amp; water play, and values education.</p>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Age: 3–5 years</li>
+            <li>Timing: 8:15–11:15 (Morning) / 11:15–2:15 (Noon)</li>
+            <li>PRE-SCHOOL AFFILIATED WITH EURO KIDS</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card program" data-tags="english">
+          <h3>Grades 1–10 (English Medium)</h3>
+          <p>Comprehensive curriculum with Math, Science, Social Science, English, Gujarati, Computer, PE and Art.</p>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Assessments: Formative + Summative</li>
+            <li>Sports clubs</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card program" data-tags="gujarati">
+          <h3>Grades 1–10 (Gujarati Medium)</h3>
+          <p>Strong fundamentals in Gujarati language with parallel emphasis on Science &amp; Math; English taught progressively.</p>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Activity-based learning</li>
+            <li>Bridge English sessions</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card program" data-tags="science english">
+          <h3>XI–XII Science (English Medium)</h3>
+          <p>Physics, Chemistry, Mathematics, Biology; competitive exam foundation (JEE/NEET) with mock tests and mentorship.</p>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Labs &amp; problem-solving workshops</li>
+            <li>Counselling for careers</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card program" data-tags="commerce english">
+          <h3>XI–XII Commerce (English Medium)</h3>
+          <p>It creates opportunities for trade and employment.</p>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Best teachers &amp; problem-solving workshops</li>
+            <li>Counselling for careers</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card program" data-tags="science gujarati">
+          <h3>XI–XII Science (Gujarati Medium)</h3>
+          <p>Full Science stream in Gujarati with bilingual support material; focused practice and concept mastery.</p>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Topic clinics &amp; doubt clearing</li>
+            <li>Past paper practice (GSEB)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card program" data-tags="commerce gujarati">
+          <h3>XI–XII Commerce (Gujarati Medium)</h3>
+          <p>It creates opportunities for trade and employment.</p>
+          <ul style="color:var(--text-dim); padding-left: 20 px;">
+            <li>Best teachers &amp; problem-solving workshops</li>
+            <li>Counselling for careers</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card program" data-tags="arts english gujarati">
+          <h3>XI–XII Arts (English/Gujarati Medium)</h3>
+          <p>Explore humanities, social sciences, and creative arts. Focus on critical thinking and cultural understanding.</p>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Diverse subject options</li>
+            <li>Guidance for higher studies</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="card program" data-tags="girls english gujarati">
+          <h3>Separate Girls’ School</h3>
+          <p>Separate campus block with women faculty, leadership clubs, and safe, value-centric environment.</p>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Scholarships for meritorious girls</li>
+            <li>Career &amp; life-skills guidance</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="shifts">
+    <div class="section-title">
+      <div>
+        <h2>Morning &amp; Noon Shifts</h2>
+        <p class="section-sub">Same quality, flexible timing. Friday timings adjusted around Jummah.</p>
+      </div>
+      <span class="chip">Transport available both shifts</span>
+    </div>
+
+    <div class="grid">
+      <div class="col-6">
+        <div class="card">
+          <h3>Morning Shift</h3>
+          <table>
+            <thead><tr><th>Section</th><th>Timings</th></tr></thead>
+            <tbody>
+              <tr><td>Pre-School</td><td>08:15 – 11:15</td></tr>
+              <tr><td>Grade 9-12 (Gm)</td><td>07:30 – 12:20</td></tr>
+              <tr><td>Grades 1–12 (Commerce)</td><td>07:30 – 12:20</td></tr><tr><td>XI–XII Science</td><td>07:20 – 2:00</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:16px;color:var(--text-dim)">Friday (Jummah) half day</p>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card">
+          <h3>Noon Shift</h3>
+          <table>
+            <thead><tr><th>Section</th><th>Timings</th></tr></thead>
+            <tbody>
+              <tr><td>Pre-School</td><td>11:15 – 14:15</td></tr>
+              <tr><td>Grades 1–8 (Gm)</td><td>12:30 – 17:20</td></tr>
+              <tr><td>Girls’ School (1-9)</td><td>12:00 – 17:20</td></tr>
+            </tbody>
+          </table>
+          <p style="margin-top:16px;color:var(--text-dim)">Assembly, dua, and value talk at the start of each shift.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="notices">
+    <div class="section-title">
+      <div>
+        <h2>Notices &amp; Events</h2>
+        <p class="section-sub">Latest circulars, exam schedules, and campus events.</p>
+      </div>
+      <a class="btn" href="#downloads">All Notices</a>
+    </div>
+
+    <div id="noticesContainer">
+            <div class="notice">
+              <div class="pill">Notice</div>
+              <div>
+                <strong>Admission Open</strong> — Admission Open 2025–26 &amp; 2026-2027 — Forms available at office (9:00–1:00, 2:00–5:00). (preschool)eurokids.
+              </div>
+            </div>
+          </div>
+  </section>
+
+  <section id="facilities">
+    <div class="section-title">
+      <div>
+        <h2>Facilities</h2>
+        <p class="section-sub">Everything students need to learn, explore, and grow.</p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="col-4"><div class="card"><h3>🧪 Science &amp; Computer Labs</h3><p>Physics, Chemistry, Biology labs; 40-seat computer lab with coding modules.</p></div></div>
+      <div class="col-4"><div class="card"><h3>📚 Library</h3><p>6,000+ titles, reading corners, reference section, and digital catalogue.</p></div></div>
+      <div class="col-4"><div class="card"><h3>🕌 Prayer &amp; Ethics</h3><p>Dedicated prayer room, weekly ethics sessions, and value education.</p></div></div>
+      <div class="col-4"><div class="card"><h3>⚽ Sports</h3><p>Playground, futsal court, PE program, and annual sports meet.</p></div></div>
+      <div class="col-4"><div class="card"><h3>🚌 Transport</h3><p>Buses with trained staff; routes across the city.</p></div></div>
+      <div class="col-4"><div class="card"><h3>🧯 Safety</h3><p>CCTV, fire safety, medical room, and child protection policy.</p></div></div>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <div class="section-title">
+      <div>
+        <h2>Campus Gallery</h2>
+        <p class="section-sub">Snapshots from classrooms, labs, and events.</p>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="col-4"><div class="card"><img alt="Classroom scene with students" src="DSCN6045.JPG"></div></div>
+      <div class="col-4"><div class="card"><img alt="School library with books" src="DJI_20251015180026_0002_D.JPG"></div></div>
+      <div class="col-4"><div class="card"><img alt="Science lab experiment" src="DSCN6039.JPG"></div></div>
+    </div>
+  </section>
+
+  <section id="fees">
+    <div class="section-title">
+      <div>
+        <h2>Fees Structure</h2>
+        <p class="section-sub">Transparent fee details for all academic programs.</p>
+      </div>
+      <a class="btn" href="#contact">Enquire Now</a>
+    </div>
+    <div class="card">
+      <p>Detailed fee structures for each program (Pre-School, Grades 1-10, XI-XII Science/Commerce/Arts, Girls' School) are available at the school office or upon request via the contact form.</p>
+      <ul style="color:var(--text-dim); padding-left: 20px;">
+        <li>Admission Fees</li>
+        <li>Tuition Fees (monthly/quarterly)</li>
+        <li>Activity Fees</li>
+        
+      </ul>
+      <p style="margin-top:16px;color:var(--text-dim)">Scholarships are available for meritorious students and those in need. Please contact the administration for more details.</p>
+    </div>
+  </section>
+
+  <section id="admissions">
+    <div class="section-title">
+      <div>
+        <h2>Admissions</h2>
+        <p class="section-sub">Simple 4-step process. Apply online or visit the office.</p>
+      </div>
+      <a class="btn primary" href="#contact">Talk to Admissions</a>
+    </div>
+
+    <div class="grid">
+      <div class="col-6">
+        <div class="card">
+          <h3>Steps</h3>
+          <ol style="color:var(--text-dim); padding-left: 20px;">
+            <li>Fill Online/Office Form (with documents)</li>
+            <li>Assessment/Interaction (grade-wise)</li>
+            <li>Seat Offer &amp; Fee Payment</li>
+            <li>Orientation &amp; Start</li>
+          </ol>
+          <h3 style="margin-top:16px">Documents</h3>
+          <ul style="color:var(--text-dim); padding-left: 20px;">
+            <li>Birth Certificate, Aadhar</li>
+            <li>Previous Report Card / LC</li>
+            <li>Photos (passport size)</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card">
+          <h3>Admission Schedule</h3>
+          <p>Admissions for the academic year 2025-26 are currently open for Pre-School and select grades. Please check the "Notices" section for specific deadlines.</p>
+          <p style="margin-top:16px;color:var(--text-dim)">Early application is encouraged as seats are limited.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+
+  <section id="faq">
+    <div class="section-title">
+      <div>
+        <h2>FAQ &amp; Policies</h2>
+        <p class="section-sub">Key information for parents and students.</p>
+      </div>
+    </div>
+
+    <details open="">
+      <summary>What is the uniform policy?</summary>
+      <p>Neat, modest uniform as per handbook; lab coats for practicals. Separate code for Girls’ Section. ID card mandatory.</p>
+    </details>
+    <details open="">
+      <summary>Medium change possible between years?</summary>
+      <p>Yes, based on seat availability and bridging assessment.</p>
+    </details>
+    <details open="">
+      <summary>How are religious activities integrated?</summary>
+      <p>Daily dua, Friday schedule adjusted for Jummah, ethics periods, and value-based assemblies. All activities are inclusive and non-coercive.</p>
+    </details>
+  </section>
+
+  <section id="contact">
+    <div class="section-title">
+      <div>
+        <h2>Contact &amp; Visit</h2>
+        <p class="section-sub">We’re happy to help. Office hours 9:00–1:00 &amp; 2:00–5:00.</p>
+      </div>
+    </div>
+    <div class="grid" style="margin-top: 20px;">
+      <div class="col-6">
+        <div class="card">
+          <h3>Address</h3>
+          <p>Near City Mosque, Main Road, Ahmedabad, Gujarat</p>
+          <p>Phone: <a href="tel:+919824266676" style="color:var(--accent)">+91 9824266676</a> • Email: <a href="crescentschoolhd@yahoo.co.in" style="color:var(--accent)">crescentschoolhd@yahoo.co.in</a></p>
+          <div class="map-container" style="margin-top:16px;">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3672.909760231131!2d72.5120415!3d22.990345599999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395e9a941804c797%3A0xf0b59df21c8a4d43!2sCrescent%20School!5e0!3m2!1sen!2sin!4v1758253005401!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card" style="min-height: 250px;">
+            <h3>Enquiry Form</h3>
+            <p style="color:var(--text-dim)">You can integrate your contact form code here to utilize this space. The card styling is ready!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="careers">
+    <div class="section-title">
+      <div>
+        <h2>Careers</h2>
+        <p class="section-sub">We welcome passionate educators. Female faculty encouraged for Girls’ Section.</p>
+      </div>
+      <a class="btn" href="#contact">Apply via Contact Form</a>
+    </div>
+    <div class="card">
+      <ul style="color:var(--text-dim); padding-left: 20px;">
+        <li>Pre-Primary Teachers (ECCE)</li>
+        <li>Maths/Science (Grades 6–10)</li>
+        <li>Physics/Chemistry/Biology (XI–XII)</li>
+        <li>Computer Science &amp; Lab Assistants</li>
+        <li>Female PE &amp; Counsellor (Girls’ Section)</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="cols">
+      <div class="col-4">
+        <h3 style="margin-top:0;color:var(--accent)">Crescent School</h3>
+        <p>Excellence • Character • Faith</p>
+        <p>Affiliated to GSEB • English &amp; Gujarati Medium</p>
+      </div>
+      <div class="col-4">
+        <h4 style="color:var(--accent)">Quick Links</h4>
+        <ul style="list-style: none; padding: 0;">
+          <li><a href="#programs">Programs</a></li>
+          <li><a href="#admissions">Admissions</a></li>
+          <li><a href="#fees">Fees</a></li>
+          <li><a href="#downloads">Downloads</a></li>
+        </ul>
+      </div>
+      <div class="col-4">
+        <h4 style="color:var(--accent)">Contact</h4>
+        <p>Sarkhej Rd, Near Shahin Tiles Factory, Behind Amber Tower, Al Asbab Society, Makarba, Ahmedabad, Gujarat 380055</p>
+        <p>+91 9824266676</p>
+        <p>crescentschoolhd@yahoo.co.in</p>
+      </div>
+    </div>
+    <div class="footbar">© 2025 Crescent School. All rights reserved.
+      <div class="footbar" style="margin-top: 5px;">Website developed by Ayaan.</div>
+    </div>
+  </footer>
+
+  <script>
+    // === FIREBASE INITIALIZATION & DATA LOADING ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyBZkf83jEGeffLNF0vFvnv6U8kRkRZXpI8",
+      authDomain: "ool-site-updates.firebaseapp.com",
+      databaseURL: "https://ool-site-updates-default-rtdb.firebaseio.com",
+      projectId: "ool-site-updates",
+      storageBucket: "ool-site-updates.firebasestorage.app",
+      messagingSenderId: "1045153400854",
+      appId: "1:1045153400854:web:4ed7fafe18c9c542fe4d37",
+      measurementId: "G-DFP7LC9YMQ"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // 1. Load Marquee Update
+    function loadMarquee() {
+      const marqueeElement = document.getElementById('marqueeContent');
+      db.ref('marqueeUpdate').on('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.text) {
+          marqueeElement.innerHTML = data.text;
+        } else {
+          marqueeElement.innerHTML = 'Welcome to Crescent School! Admissions are open.';
+        }
+      });
+    }
+
+    // 2. Load Notices & Events
+    function loadNotices() {
+      const noticesContainer = document.getElementById('noticesContainer');
+      // Clear initial 'Loading' message
+      noticesContainer.innerHTML = ''; 
+
+      // Listen for changes to the 'notices' collection, ordered by timestamp (newest first)
+      db.ref('notices').orderByChild('timestamp').limitToLast(10).on('value', (snapshot) => {
+        // Clear old list every time data is updated
+        noticesContainer.innerHTML = '';
+        const notices = [];
+        snapshot.forEach(childSnapshot => {
+          // Store key (for potential future linking/tracking) and data
+          notices.push({ key: childSnapshot.key, ...childSnapshot.val() });
+        });
+
+        // Reverse the array so the newest item (highest timestamp) is at the top
+        notices.reverse();
+
+        if (notices.length === 0) {
+            noticesContainer.innerHTML = '<p style="color:var(--text-dim); text-align: center;">No current notices or events posted.</p>';
+            return;
+        }
+
+        notices.forEach(notice => {
+          const type = notice.type || 'Notice';
+          const title = notice.title || 'Untitled';
+          const description = notice.description || 'No description provided.';
+          
+          const noticeHtml = `
+            <div class="notice">
+              <div class="pill">${type}</div>
+              <div>
+                <strong>${title}</strong> — ${description}
+              </div>
+            </div>
+          `;
+          noticesContainer.innerHTML += noticeHtml;
+        });
+      });
+    }
+
+    // Run data loading functions on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        loadMarquee();
+        loadNotices();
+    });
+    // === END FIREBASE LOGIC ===
+
+
+    // Mobile menu toggle (EXISTING LOGIC)
+    const burger=document.getElementById('burger');
+    const menu=document.getElementById('menu');
+    burger.addEventListener('click',()=>menu.classList.toggle('open'));
+
+    // Program filters (EXISTING LOGIC)
+    const buttons=[...document.querySelectorAll('.filters button')];
+    const programs=[...document.querySelectorAll('.program')];
+    buttons.forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        buttons.forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const tag=btn.dataset.filter;
+        programs.forEach(card=>{
+          if(tag==='all'){card.parentElement.style.display='block';return;}
+          const tags=(card.dataset.tags||'').split(' ');
+          card.parentElement.style.display=tags.includes(tag)?'block':'none';
+        });
+      });
+    });
+
+    // === Hero Media Slideshow Logic (EXISTING LOGIC) ===
+    const video = document.getElementById('heroVideo');
+    const slideshowContainer = document.getElementById('imageSlideshow');
+    // Select ALL elements with class 'slide' within the container
+    const slides = slideshowContainer.querySelectorAll('.slide');
+    let currentSlide = 0;
+    const intervalTime = 4000; // Change photo every 4 seconds
+
+    function nextSlide() {
+        // Hide current slide
+        slides[currentSlide].classList.remove('active');
+        
+        // Move to next slide, loop back to 0 if at end
+        currentSlide = (currentSlide + 1) % slides.length;
+        
+        // Show new slide
+        slides[currentSlide].classList.add('active');
+    }
+
+    function startSlideshow() {
+        // 1. Hide the video completely (use opacity for a smooth fade out if possible)
+        video.style.opacity = '0';
+        video.style.zIndex = '1';
+        
+        // 2. Make the slideshow container visible and on top
+        slideshowContainer.style.opacity = 1;
+        slideshowContainer.style.zIndex = 3; 
+        
+        // 3. Ensure the first slide is visible when starting
+        slides[currentSlide].classList.add('active');
+        
+        // 4. Start the photo rotation
+        setInterval(nextSlide, intervalTime);
+    }
+    
+    // Initial State Setup: Ensure only the first slide is active initially
+    slides.forEach((slide, index) => {
+        if (index > 0) {
+            slide.classList.remove('active');
+        }
+    });
+
+    // 1. Set Video Speed (Playback Rate)
+    // 1.5 means 50% faster than normal speed (1.0)
+    video.playbackRate = 1.5; 
+
+    // 2. Video Event Listener for successful ending
+    video.addEventListener('ended', startSlideshow);
+
+    // 3. Explicit Play Attempt and Fallback Logic
+    // This handles mobile browsers that block autoplay
+    video.play().catch(error => {
+        console.warn("Video autoplay prevented or failed, starting slideshow immediately as fallback.", error);
+        // Start slideshow immediately if video fails to play
+        startSlideshow(); 
+    });
+
+    // Program filters (existing logic)
+    // ...
+  </script>
+
+
+</body></html>
